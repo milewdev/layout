@@ -13,11 +13,23 @@ all_solutions = []
 solution = []
 
 
+#
+# This is an immutable class, hence the overridden __setattr__() and
+# __delattr__(), and the odd call to object.__setattr__() in __init__().
+#
+# See: http://www.craigmbooth.com/python-fragments-1-a-class-with-immutable-attributes/
+#
 class Coordinate:
   
   def __init__(self, x, y):
-    self.x = x
-    self.y = y
+    object.__setattr__(self, "x", x)
+    object.__setattr__(self, "y", y)
+    
+  def __setattr__(self, *args):
+    raise AttributeError("Coordinate is immutable")
+    
+  def __delattr__(self, *args):
+    raise AttributeError("Coordinate is immutable")
   
   
 class CoordinateIterator:
