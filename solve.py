@@ -6,6 +6,10 @@ def debug(*objs):
   print(*objs, file=sys.stderr)
   
   
+num_nodes = 4
+max_domain = 6
+scale = 20
+all_solutions = []
 solution = []
 
 
@@ -91,12 +95,6 @@ class Occupied:
     return self.grid[coordinate.x - self.x_min][coordinate.y - self.y_min] == 0
 
 
-num_nodes = 4
-max_domain = 6
-all_solutions = []
-scale = 20
-
-
 # node coordinates
 node_coordinates = [ Coordinate(1,5,1,5) for i in xrange(num_nodes-1) ]
 node_coordinates.insert(0, Coordinate(1,1,3,3))   # first node locked at coordinate (1,3)
@@ -106,11 +104,11 @@ node_coordinates.insert(0, Coordinate(1,1,3,3))   # first node locked at coordin
 occupied = Occupied(0,6,0,6)
 
 
-# build nodes
+# nodes
 nodes = [ Node(i) for i in xrange(num_nodes) ]
 
 
-# build connections
+# connections
 connections = [
   Connection(nodes[0], nodes[1]),
   Connection(nodes[1], nodes[2]),
@@ -140,7 +138,7 @@ def extract_solution(node_coordinates):
 
       
 def save_candidate_solution(candidate_solution):
-    all_solutions.append(list(candidate_solution))
+  all_solutions.append(list(candidate_solution))
   
   
 def nice_closest_to_x_axis():
