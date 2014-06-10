@@ -147,10 +147,6 @@ def extract_solution(node_coordinates):
     clone = Coordinate( coord.x, coord.y )
     solution.append(clone)                # TODO: use coord.clone() instead?
   return solution
-
-      
-def save_candidate_solution(candidate_solution):
-  all_solutions.append(list(candidate_solution))
   
   
 def nice_closest_to_x_axis():
@@ -245,7 +241,7 @@ def output():
 
 find_all_solutions(0)
 solutions = all_solutions
-solutions = find_nice_solutions(solutions, nice_closest_to_x_axis)
+# solutions = find_nice_solutions(solutions, nice_closest_to_x_axis)
 solutions = find_nice_solutions(solutions, nice_closest_together)
-# solutions = find_nice_solutions(solutions, nice_number_of_nodes_on_x_axis)
+solutions = find_nice_solutions(solutions, nice_number_of_nodes_on_x_axis)
 print_solutions(solutions)
