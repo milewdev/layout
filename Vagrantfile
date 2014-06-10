@@ -17,9 +17,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     install_gpg                                         # needed in order to sign git commits
     install_git                                         # source is on github
     install_editor
+    install_python3                                     # virtualenv copies python3 from a local install rather than downloading it
+    install_virtualenv
     install_project_source_code PROJECT_SOURCE_URL, PROJECT_VM_PATH
-    install_python2 PROJECT_VM_PATH
-    pip_install PROJECT_VM_PATH
+    virtualenv PROJECT_VM_PATH
     reboot_vm
   end
 end
@@ -116,18 +117,24 @@ class VagrantHelper
       install_pkg "http://nodejs.org/dist/v0.10.26/node-v0.10.26.pkg"
     end
     
-    def install_python2(project_vm_path)
-      say "Installing python2"
-      url = "https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.11.tar.gz"
+    def install_python3
+      say "Installing python3"
+      install_dmg 'https://www.python.org/ftp/python/3.4.1/python-3.4.1-macosx10.6.dmg',
+        'Python 3.4.1',
+        'Python.mpkg'
+    end
+    
+    def install_virtualenv
+      say "Installing virtualenv"
+      url = "https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.11.6.tar.gz"
       cache_dir = derive_cache_dir(url)
-      download url, cache_dir, "virtualenv-1.11.tar.gz"
+      download url, cache_dir, "virtualenv-1.11.6.tar.gz"
       run_script <<-"EOF"
-        tar xvfz #{cache_dir[:guest_path]}/virtualenv-1.11.tar.gz
-        python virtualenv-1.11/virtualenv.py #{project_vm_path}
-        pushd #{project_vm_path}
-        source bin/activate
+        tar xvfz #{cache_dir[:guest_path]}/virtualenv-1.11.6.tar.gz
+        pushd virtualenv-1.11.6
+        sudo python setup.py install
         popd
-        rm -rf virtualenv-1.11
+        sudo rm -rf virtualenv-1.11.6
       EOF
     end
 
@@ -164,6 +171,15 @@ class VagrantHelper
     def pip_install(project_vm_path)
       say "Run pip install -r requirements.txt"
       run_script "( cd #{project_vm_path} && exec bin/pip install -r requirements.txt )"
+    end
+    
+    def virtualenv(project_vm_path)
+      say "Run virtualenv"
+      run_script <<-"EOF"
+        pushd #{project_vm_path}
+        virtualenv --no-site-packages --python=`which python3` env
+        popd
+      EOF
     end
 
     def reboot_vm
