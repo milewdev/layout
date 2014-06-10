@@ -13,7 +13,7 @@ all_solutions = []
 solution = []
 
 
-class Point:        # TODO: rename to Coordinate?
+class Coordinate:
   
   def __init__(self, x, y):
     self.x = x
@@ -55,7 +55,7 @@ class Node:
     
   def coord(self):
     coordinate = solution[self.coord_index]
-    return Point( coordinate.x, coordinate.y )
+    return Coordinate( coordinate.x, coordinate.y )
     
   def __str__(self):
     return "Node(coord_index: %d)" % (self.coord_index)
@@ -132,8 +132,8 @@ def find_all_solutions(i):
 def extract_solution(node_coordinates):
   solution = []
   for coord in node_coordinates:
-    point = Point( coord.x, coord.y )
-    solution.append(point)
+    clone = Coordinate( coord.x, coord.y )
+    solution.append(clone)                # TODO: use coord.clone() instead?
   return solution
 
       
