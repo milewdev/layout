@@ -103,7 +103,7 @@ node_coordinates.insert(0, Coordinate(1,1,3,3))   # first node locked at coordin
   
   
 # occupations
-occupied2 = Occupied(0,6,0,6)
+occupied = Occupied(0,6,0,6)
 
 
 # build nodes
@@ -119,15 +119,15 @@ connections = [
 ]
 
 
-def find_all_solutions2(i):
+def find_all_solutions(i):
   if i == len(node_coordinates):
     all_solutions.append(extract_solution(node_coordinates))
   else:
     while node_coordinates[i].next():     # TODO: eliminate train wreck?
-      if occupied2.is_vacant(node_coordinates[i]):
-        occupied2.occupy(node_coordinates[i])
-        find_all_solutions2(i + 1)
-        occupied2.vacate(node_coordinates[i])
+      if occupied.is_vacant(node_coordinates[i]):
+        occupied.occupy(node_coordinates[i])
+        find_all_solutions(i + 1)
+        occupied.vacate(node_coordinates[i])
     node_coordinates[i].reset()           # TODO: eliminate train wreck?
       
       
@@ -178,11 +178,11 @@ def find_nice_solutions(solutions, nice_function):
   return nice_solutions
   
   
-def print_solutions2(solutions):
+def print_solutions(solutions):
   global solution
   output_start()
   for solution in solutions:
-    output2()
+    output()
   output_end()
 
 
@@ -201,7 +201,7 @@ def output_end():
   """ )
   
   
-def output2():
+def output():
   
   # start svg tag
   print( "<svg width='%d' height='%d' viewBox='-1,-1,%d,%d' style='margin:1em;'>"
@@ -233,9 +233,9 @@ def output2():
   print( "</svg>" )
 
 
-find_all_solutions2(0)
+find_all_solutions(0)
 solutions = all_solutions
 solutions = find_nice_solutions(solutions, nice_closest_to_x_axis)
 solutions = find_nice_solutions(solutions, nice_closest_together)
 # solutions = find_nice_solutions(solutions, nice_number_of_nodes_on_x_axis)
-print_solutions2(solutions)
+print_solutions(solutions)
