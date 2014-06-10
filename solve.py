@@ -95,7 +95,7 @@ class Occupied:
     self.y_min = y_min
     width = x_max - x_min + 1
     height = y_max - y_min + 1
-    self.grid = [[0 for x in xrange(width)] for y in xrange(height)] 
+    self.grid = [[0 for x in range(width)] for y in range(height)] 
 
   def occupy(self, coordinate):
     self.grid[coordinate.x - self.x_min][coordinate.y - self.y_min] += 1
@@ -108,7 +108,7 @@ class Occupied:
 
 
 # node coordinates
-node_coordinates = [ CoordinateIterator(1,5,1,5) for i in xrange(num_nodes-1) ]
+node_coordinates = [ CoordinateIterator(1,5,1,5) for i in range(num_nodes-1) ]
 node_coordinates.insert(0, CoordinateIterator(1,1,3,3))   # first node locked at coordinate (1,3)
   
   
@@ -117,7 +117,7 @@ occupied = Occupied(0,6,0,6)
 
 
 # nodes
-nodes = [ Node(i) for i in xrange(num_nodes) ]
+nodes = [ Node(i) for i in range(num_nodes) ]
 
 
 # connections
@@ -218,12 +218,12 @@ def output():
     % ((max_domain + 1) * scale, (max_domain + 1) * scale, (max_domain + 1) * scale, (max_domain + 1) * scale) )
     
   # horizontal grid lines
-  for y in xrange(0, max_domain + 1):
+  for y in range(0, max_domain + 1):
     print( "<line x1='0' y1='%d' x2='%d' y2='%d' stroke='#eee' stroke-width='1' shape-rendering='crispEdges' />"
       % (y * scale, max_domain * scale, y * scale) )
       
   # vertical grid lines
-  for x in xrange(0, max_domain + 1):
+  for x in range(0, max_domain + 1):
     print( "<line x1='%d' y1='0' x2='%d' y2='%d' stroke='#eee' stroke-width='1' shape-rendering='crispEdges' />"
       % (x * scale, x * scale, max_domain * scale) )
   
