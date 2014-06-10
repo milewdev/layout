@@ -20,7 +20,7 @@ class Point:        # TODO: rename to Coordinate?
     self.y = y
   
   
-class Coordinate:   # TODO: rename to something like CoordinateIterator
+class CoordinateIterator:
   
   def __init__(self, x_start, x_end, y_start, y_end):
     self.x_start = x_start
@@ -96,8 +96,8 @@ class Occupied:
 
 
 # node coordinates
-node_coordinates = [ Coordinate(1,5,1,5) for i in xrange(num_nodes-1) ]
-node_coordinates.insert(0, Coordinate(1,1,3,3))   # first node locked at coordinate (1,3)
+node_coordinates = [ CoordinateIterator(1,5,1,5) for i in xrange(num_nodes-1) ]
+node_coordinates.insert(0, CoordinateIterator(1,1,3,3))   # first node locked at coordinate (1,3)
   
   
 # occupations
