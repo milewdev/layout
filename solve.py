@@ -138,24 +138,30 @@ connections = [
 #
 # Node placement
 #
-def find_all_solutions(i):
-  if i == len(node_coordinates):
-    all_solutions.append(extract_solution(node_coordinates))
-  else:
-    while node_coordinates[i].next():     # TODO: eliminate train wreck?
-      if occupied.is_vacant(node_coordinates[i]):
-        occupied.occupy(node_coordinates[i])
-        find_all_solutions(i + 1)
-        occupied.vacate(node_coordinates[i])
-    node_coordinates[i].reset()           # TODO: eliminate train wreck?
+class NodePlacementFinder:
+  
+  def __init__(self):
+    x = 0
+    
+  @classmethod
+  def find_all_solutions(cls, i):
+    if i == len(node_coordinates):
+      all_solutions.append(cls.extract_solution(node_coordinates))
+    else:
+      while node_coordinates[i].next():     # TODO: eliminate train wreck?
+        if occupied.is_vacant(node_coordinates[i]):
+          occupied.occupy(node_coordinates[i])
+          cls.find_all_solutions(i + 1)
+          occupied.vacate(node_coordinates[i])
+      node_coordinates[i].reset()           # TODO: eliminate train wreck?
 
-
-def extract_solution(node_coordinates):
-  solution = []
-  for coord in node_coordinates:
-    clone = Coordinate( coord.x, coord.y )
-    solution.append(clone)                # TODO: use coord.clone() instead?
-  return solution
+  @classmethod
+  def extract_solution(cls, node_coordinates):
+    solution = []
+    for coord in node_coordinates:
+      clone = Coordinate( coord.x, coord.y )
+      solution.append(clone)                # TODO: use coord.clone() instead?
+    return solution
 
 
 #
@@ -185,7 +191,7 @@ class NicestNodePlacementFinder:
     return (-1 * nice)    # make negative so that smaller values are better
 
   @classmethod
-  def find_nice_solutions(cls, solutions, nice_function):
+  def find(cls, solutions, nice_function):
     global solution
     best = float("inf")
     nice_solutions = []
@@ -389,7 +395,7 @@ class SolutionPathsPrinter:
 # Main
 #
 def main():
-  find_all_solutions(0)
+  NodePlacementFinder.find_all_solutions(0)
   solutions = all_solutions
 
   # solution = solutions[7]
@@ -398,9 +404,9 @@ def main():
   # paths = NicestPathFinder.find(paths)
   # SolutionPathsPrinter.do(solution, paths)
 
-  solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_to_x_axis)
-  solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_together)
-  solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_number_of_nodes_on_x_axis)
+  solutions = NicestNodePlacementFinder.find(solutions, NicestNodePlacementFinder.nice_closest_to_x_axis)
+  solutions = NicestNodePlacementFinder.find(solutions, NicestNodePlacementFinder.nice_closest_together)
+  solutions = NicestNodePlacementFinder.find(solutions, NicestNodePlacementFinder.nice_number_of_nodes_on_x_axis)
   SolutionsPrinter.do(solutions)
 
 
