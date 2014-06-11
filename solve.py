@@ -9,7 +9,6 @@ def debug(*objs):
 num_nodes = 2
 max_domain = 6
 scale = 20
-all_solutions = []
 solution = []
 paths = []
 
@@ -140,23 +139,27 @@ connections = [
 #
 class NodePlacementFinder:
   
-  def __init__(self):
-    x = 0
+  solutions = []
+  
+  @classmethod
+  def find(cls):
+    cls._recursive_find(0)
+    return cls.solutions
     
   @classmethod
-  def find(cls, i):
+  def _recursive_find(cls, i):
     if i == len(node_coordinates):
-      all_solutions.append(cls.extract_solution(node_coordinates))
+      cls.solutions.append(cls._extract_solution(node_coordinates))
     else:
       while node_coordinates[i].next():     # TODO: eliminate train wreck?
         if occupied.is_vacant(node_coordinates[i]):
           occupied.occupy(node_coordinates[i])
-          cls.find(i + 1)
+          cls._recursive_find(i + 1)
           occupied.vacate(node_coordinates[i])
       node_coordinates[i].reset()           # TODO: eliminate train wreck?
 
   @classmethod
-  def extract_solution(cls, node_coordinates):
+  def _extract_solution(cls, node_coordinates):
     solution = []
     for coord in node_coordinates:
       clone = Coordinate( coord.x, coord.y )
@@ -395,8 +398,7 @@ class SolutionPathsPrinter:
 # Main
 #
 def main():
-  NodePlacementFinder.find(0)
-  solutions = all_solutions
+  solutions = NodePlacementFinder.find()
 
   # solution = solutions[7]
   # path_finder = PathFinder(solution[0], solution[1])
