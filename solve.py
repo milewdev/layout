@@ -194,44 +194,6 @@ class PathFinder:
     
   def path_to_str(self, path):
     return '-'.join( [ coord.__str__() for coord in path ] )
-
-
-#
-# Nicest solution
-#
-def nice_closest_to_x_axis():
-  nice = 0
-  for point in solution:
-    nice += abs(point.y - 3)
-  return nice
-
-
-def nice_closest_together():
-  nice = 0
-  for connection in connections:
-    nice += connection.length_squared()
-  return nice
-
-
-def nice_number_of_nodes_on_x_axis():
-  nice = 0
-  for point in solution:
-    if point.y == 3: nice += 1
-  return (-1 * nice)    # make negative so that smaller values are better
-
-
-def find_nice_solutions(solutions, nice_function):
-  global solution
-  best = float("inf")
-  nice_solutions = []
-  for solution in solutions:
-    nice = nice_function()
-    if nice < best:
-      nice_solutions = [solution]
-      best = nice
-    elif nice == best:
-      nice_solutions.append(solution)
-  return nice_solutions
   
   
 #
@@ -250,6 +212,47 @@ class NicestPathFinder:
       if len(path) == shortest_length:
         shortest_paths.append(path)
     return shortest_paths
+
+
+#
+# Nicest node placement finder
+#
+class NicestNodePlacementFinder:
+  
+  @classmethod
+  def nice_closest_to_x_axis(cls):
+    nice = 0
+    for point in solution:
+      nice += abs(point.y - 3)
+    return nice
+
+  @classmethod
+  def nice_closest_together(cls):
+    nice = 0
+    for connection in connections:
+      nice += connection.length_squared()
+    return nice
+
+  @classmethod
+  def nice_number_of_nodes_on_x_axis(cls):
+    nice = 0
+    for point in solution:
+      if point.y == 3: nice += 1
+    return (-1 * nice)    # make negative so that smaller values are better
+
+  @classmethod
+  def find_nice_solutions(cls, solutions, nice_function):
+    global solution
+    best = float("inf")
+    nice_solutions = []
+    for solution in solutions:
+      nice = nice_function()
+      if nice < best:
+        nice_solutions = [solution]
+        best = nice
+      elif nice == best:
+        nice_solutions.append(solution)
+    return nice_solutions
 
 
 #
@@ -297,12 +300,6 @@ class SolutionsPrinter:
       print( "<line x1='%d' y1='0' x2='%d' y2='%d' stroke='#eef' stroke-width='1' shape-rendering='crispEdges' />"
         % (x * scale, x * scale, max_domain * scale) )
 
-    # connections
-    # for connection in connections:
-    #   x1, y1 = connection.node1.coord().x * scale, connection.node1.coord().y * scale
-    #   x2, y2 = connection.node2.coord().x * scale, connection.node2.coord().y * scale
-    #   print( "<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='black' stroke-width='1' shape-rendering='crispEdges' />" % (x1, y1, x2, y2) )
-  
     # paths
     for path in paths:
       x0, y0 = None, None
@@ -391,13 +388,14 @@ class SolutionPathsPrinter:
 #
 find_all_solutions(0)
 solutions = all_solutions
-solution = solutions[7]
-path_finder = PathFinder(solution[0], solution[1])
-paths = path_finder.find()
-paths = NicestPathFinder.find(paths)
-# solutions = find_nice_solutions(solutions, nice_closest_to_x_axis)
-# solutions = find_nice_solutions(solutions, nice_closest_together)
-# solutions = find_nice_solutions(solutions, nice_number_of_nodes_on_x_axis)
 
-# SolutionsPrinter.do(solutions)
-SolutionPathsPrinter.do(solution, paths)
+# solution = solutions[7]
+# path_finder = PathFinder(solution[0], solution[1])
+# paths = path_finder.find()
+# paths = NicestPathFinder.find(paths)
+# SolutionPathsPrinter.do(solution, paths)
+
+solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_to_x_axis)
+solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_together)
+solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_number_of_nodes_on_x_axis)
+SolutionsPrinter.do(solutions)
