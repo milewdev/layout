@@ -10,7 +10,6 @@ num_nodes = 2
 max_domain = 6
 scale = 20
 solution = []
-paths = []
 
 
 #
@@ -312,13 +311,13 @@ class SolutionsPrinter:
         % (x * scale, x * scale, max_domain * scale) )
 
     # paths
-    for path in paths:
-      x0, y0 = None, None
-      for coord in path:
-        x1, y1 = coord.x * scale, coord.y * scale
-        if x0 is not None:
-          print( "<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='black' stroke-width='1' shape-rendering='crispEdges' />" % (x0, y0, x1, y1) )
-        x0, y0 = x1, y1
+    # for path in paths:
+    #   x0, y0 = None, None
+    #   for coord in path:
+    #     x1, y1 = coord.x * scale, coord.y * scale
+    #     if x0 is not None:
+    #       print( "<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='black' stroke-width='1' shape-rendering='crispEdges' />" % (x0, y0, x1, y1) )
+    #     x0, y0 = x1, y1
 
     # nodes
     for node in nodes:
