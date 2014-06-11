@@ -144,14 +144,14 @@ class NodePlacementFinder:
     x = 0
     
   @classmethod
-  def find_all_solutions(cls, i):
+  def find(cls, i):
     if i == len(node_coordinates):
       all_solutions.append(cls.extract_solution(node_coordinates))
     else:
       while node_coordinates[i].next():     # TODO: eliminate train wreck?
         if occupied.is_vacant(node_coordinates[i]):
           occupied.occupy(node_coordinates[i])
-          cls.find_all_solutions(i + 1)
+          cls.find(i + 1)
           occupied.vacate(node_coordinates[i])
       node_coordinates[i].reset()           # TODO: eliminate train wreck?
 
@@ -395,7 +395,7 @@ class SolutionPathsPrinter:
 # Main
 #
 def main():
-  NodePlacementFinder.find_all_solutions(0)
+  NodePlacementFinder.find(0)
   solutions = all_solutions
 
   # solution = solutions[7]
