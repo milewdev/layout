@@ -20,6 +20,8 @@ paths = []
 #
 # See: http://www.craigmbooth.com/python-fragments-1-a-class-with-immutable-attributes/
 #
+# TODO: remove this complexity; rely on unit tests instead.
+#
 class Coordinate:
 
   def __init__(self, x, y):
@@ -157,6 +159,47 @@ def extract_solution(node_coordinates):
 
 
 #
+# Nicest node placement finder
+#
+class NicestNodePlacementFinder:
+  
+  @classmethod
+  def nice_closest_to_x_axis(cls):
+    nice = 0
+    for point in solution:
+      nice += abs(point.y - 3)
+    return nice
+
+  @classmethod
+  def nice_closest_together(cls):
+    nice = 0
+    for connection in connections:
+      nice += connection.length_squared()
+    return nice
+
+  @classmethod
+  def nice_number_of_nodes_on_x_axis(cls):
+    nice = 0
+    for point in solution:
+      if point.y == 3: nice += 1
+    return (-1 * nice)    # make negative so that smaller values are better
+
+  @classmethod
+  def find_nice_solutions(cls, solutions, nice_function):
+    global solution
+    best = float("inf")
+    nice_solutions = []
+    for solution in solutions:
+      nice = nice_function()
+      if nice < best:
+        nice_solutions = [solution]
+        best = nice
+      elif nice == best:
+        nice_solutions.append(solution)
+    return nice_solutions
+
+
+#
 # Find paths between two nodes
 #
 class PathFinder:
@@ -212,47 +255,6 @@ class NicestPathFinder:
       if len(path) == shortest_length:
         shortest_paths.append(path)
     return shortest_paths
-
-
-#
-# Nicest node placement finder
-#
-class NicestNodePlacementFinder:
-  
-  @classmethod
-  def nice_closest_to_x_axis(cls):
-    nice = 0
-    for point in solution:
-      nice += abs(point.y - 3)
-    return nice
-
-  @classmethod
-  def nice_closest_together(cls):
-    nice = 0
-    for connection in connections:
-      nice += connection.length_squared()
-    return nice
-
-  @classmethod
-  def nice_number_of_nodes_on_x_axis(cls):
-    nice = 0
-    for point in solution:
-      if point.y == 3: nice += 1
-    return (-1 * nice)    # make negative so that smaller values are better
-
-  @classmethod
-  def find_nice_solutions(cls, solutions, nice_function):
-    global solution
-    best = float("inf")
-    nice_solutions = []
-    for solution in solutions:
-      nice = nice_function()
-      if nice < best:
-        nice_solutions = [solution]
-        best = nice
-      elif nice == best:
-        nice_solutions.append(solution)
-    return nice_solutions
 
 
 #
@@ -386,16 +388,20 @@ class SolutionPathsPrinter:
 #
 # Main
 #
-find_all_solutions(0)
-solutions = all_solutions
+def main():
+  find_all_solutions(0)
+  solutions = all_solutions
 
-# solution = solutions[7]
-# path_finder = PathFinder(solution[0], solution[1])
-# paths = path_finder.find()
-# paths = NicestPathFinder.find(paths)
-# SolutionPathsPrinter.do(solution, paths)
+  # solution = solutions[7]
+  # path_finder = PathFinder(solution[0], solution[1])
+  # paths = path_finder.find()
+  # paths = NicestPathFinder.find(paths)
+  # SolutionPathsPrinter.do(solution, paths)
 
-solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_to_x_axis)
-solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_together)
-solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_number_of_nodes_on_x_axis)
-SolutionsPrinter.do(solutions)
+  solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_to_x_axis)
+  solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_closest_together)
+  solutions = NicestNodePlacementFinder.find_nice_solutions(solutions, NicestNodePlacementFinder.nice_number_of_nodes_on_x_axis)
+  SolutionsPrinter.do(solutions)
+
+
+main()
