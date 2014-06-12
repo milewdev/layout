@@ -109,6 +109,13 @@ class Occupied:
 
   def is_vacant(self, coordinate):
     return self.grid[coordinate.x - self.x_min][coordinate.y - self.y_min] == 0
+    
+    
+class Solution:
+  
+  def __init__(self):
+    self.node_coordinates = []
+    self.paths = []
 
 
 # node coordinates
@@ -145,10 +152,14 @@ class NodePlacementFinder:
     cls._recursive_find(0)
     return cls.solutions
     
+  # private
+    
   @classmethod
   def _recursive_find(cls, i):
     if i == len(node_coordinates):
-      cls.solutions.append(cls._extract_solution(node_coordinates))
+      solution = Solution()
+      solution.node_coordinates = cls._extract_solution(node_coordinates)
+      cls.solutions.append(solution)
     else:
       while node_coordinates[i].next():     # TODO: eliminate train wreck?
         if occupied.is_vacant(node_coordinates[i]):
@@ -197,13 +208,14 @@ class NicestNodePlacementFinder:
     global solution
     best = float("inf")
     nice_solutions = []
-    for solution in solutions:
+    for solution2 in solutions:
+      solution = solution2.node_coordinates
       nice = nice_function()
       if nice < best:
-        nice_solutions = [solution]
+        nice_solutions = [solution2]
         best = nice
       elif nice == best:
-        nice_solutions.append(solution)
+        nice_solutions.append(solution2)
     return nice_solutions
 
 
@@ -274,7 +286,8 @@ class SolutionsPrinter:
   def do(cls, solutions):
     global solution
     cls.pre()
-    for solution in solutions:
+    for solution2 in solutions:
+      solution = solution2.node_coordinates
       cls.output()
     cls.post()
 
@@ -337,7 +350,7 @@ class SolutionPathsPrinter:
   @classmethod
   def do(cls, xsolution, paths):
     global solution
-    solution = xsolution
+    solution = xsolution.node_coordinates
     cls.pre()
     for path in paths:
       cls.output(path)
