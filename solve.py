@@ -6,9 +6,9 @@ def debug(*objs):
   print(*objs, file=sys.stderr)
 
 
-num_nodes = 2
+num_nodes = 4
 max_domain = 6
-scale = 20
+scale = 24
 solution = []
 
 
@@ -31,7 +31,7 @@ class Coordinate:
 
   def __delattr__(self, *args):
     raise AttributeError("Coordinate is immutable")
-    
+
   def __str__(self):
     return "(%d,%d)" % (self.x, self.y)
 
@@ -109,10 +109,10 @@ class Occupied:
 
   def is_vacant(self, coordinate):
     return self.grid[coordinate.x - self.x_min][coordinate.y - self.y_min] == 0
-    
-    
+
+
 class Solution:
-  
+
   def __init__(self):
     self.node_coordinates = []
     self.paths = []
@@ -144,16 +144,16 @@ connections = [
 # Node placement
 #
 class NodePlacementFinder:
-  
+
   solutions = []
-  
+
   @classmethod
   def find(cls):
     cls._recursive_find(0)
     return cls.solutions
-    
+
   # private
-    
+
   @classmethod
   def _recursive_find(cls, i):
     if i == len(node_coordinates):
@@ -181,7 +181,7 @@ class NodePlacementFinder:
 # Nicest node placement finder
 #
 class NicestNodePlacementFinder:
-  
+
   @classmethod
   def nice_closest_to_x_axis(cls):
     nice = 0
@@ -223,17 +223,17 @@ class NicestNodePlacementFinder:
 # Find paths between two nodes
 #
 class PathFinder:
-  
+
   def __init__(self, begin, end):
     self.begin = begin
     self.end = end
     self.paths = []
     self.shortest_path = float("inf")
-    
+
   def find(self):
     self.step(self.begin, [])
     return self.paths
-    
+
   def step(self, coord, path):
     if not occupied.is_vacant(coord):
       return
@@ -254,16 +254,16 @@ class PathFinder:
         self.step(Coordinate(coord.x, coord.y + 1), path)
     occupied.vacate(coord)
     path.pop()
-    
+
   def path_to_str(self, path):
     return '-'.join( [ coord.__str__() for coord in path ] )
-  
-  
+
+
 #
 # Nicest path finder
 #
 class NicestPathFinder:
-  
+
   @classmethod
   def find(cls, paths):
     shortest_length = float("inf")
@@ -281,7 +281,7 @@ class NicestPathFinder:
 # Print solution
 #
 class SolutionsPrinter:
-  
+
   @classmethod
   def do(cls, solutions):
     global solution
@@ -340,13 +340,13 @@ class SolutionsPrinter:
 
     # end svg tag
     print( "</svg>" )
-    
-    
+
+
 #
 # Print a solution's paths
 #
 class SolutionPathsPrinter:
-  
+
   @classmethod
   def do(cls, xsolution, paths):
     global solution
