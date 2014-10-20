@@ -1,5 +1,5 @@
 #
-# Vagrantfile to create html5-layout-lab development environment.
+# Vagrantfile to create layout development environment.
 #
 
 
